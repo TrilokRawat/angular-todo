@@ -1,0 +1,120 @@
+<div class="container-fluid main-wraper">
+    <h4 class="my-2"> Todos App <button type="button" class="btn btn-primary float-right mr-1" data-toggle="modal"
+            data-target=".todo-model" (click)="onSelectAction('Add', {})"> Add New</button> </h4>
+    <div class=" row" *ngIf="todos">
+        <div class="col-sm-4 my-2" *ngFor="let item of todos">
+            <div class="card">
+                <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                <div class="card-body">
+                    <h5 class="card-title"> Title: {{item.title}}</h5>
+                    <p class="card-text"> Decription: {{item.description}}</p>
+                    <p class="card-text">
+                        <button type="button" class="btn btn-primary ml-2" (click)="onSelectAction('View', item)"
+                            data-toggle="modal" data-target=".view-todo-model"> View </button>
+                        <button type="button" class="btn btn-primary ml-2" (click)="onSelectAction('Edit', item)"
+                            data-toggle="modal" data-target=".todo-model"> Edit </button>
+                        <button type="button" class="btn btn-danger ml-2" (click)="delete(item)"> Delete </button>
+                    </p>
+
+
+                </div>
+            </div>
+        </div>
+        <p *ngIf="todos.length == 0"> No todo found.</p>
+    </div>
+
+    <div class="modal fade todo-model" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form [formGroup]="todoForm" (ngSubmit)="addEditTodo(todoForm.value)" ngNativeValidate>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{key}} </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name" class="col-form-label">Title:</label>
+                            <input type="text" form class="form-control"
+                                [ngClass]="{ 'is-invalid': submitted && todoForm.controls.title.errors }"
+                                formControlName="title" id="name">
+                            <div *ngIf="submitted && todoForm.controls.title.errors" class="invalid-feedback">
+                                <div *ngIf="todoForm.controls.title.errors.required">Title is required</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description-text" class="col-form-label">Description:</label>
+                            <textarea class="form-control" id="description-text" formControlName="description"
+                                [ngClass]="{ 'is-invalid': submitted && todoForm.controls.description.errors }"></textarea>
+                            <div *ngIf="submitted && todoForm.controls.description.errors" class="invalid-feedback">
+                                <div *ngIf="todoForm.controls.description.errors.required">Description is required</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="link-text" class="col-form-label">Link::</label>
+                            <input type="text" form class="form-control" formControlName="links" id="link-text">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlFile1">Image</label>
+                            <input type="file" class="form-control-file" id="" (change)="onselectFile($event)"
+                                formControlName="thumbnail">
+                            <img [src]="this.imageData" alt="img" *ngIf="imageData && key == 'Edit'" height="80px"
+                                width="80px">
+                            <!-- <img id="myImg" src="" class=""> -->
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            id="close-popup">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade view-todo-model" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" *ngIf="selectedTodo">
+                    <div class="row">
+                        <div class="col-4">
+                            <img src="{{selectedTodo.thumbnail}}" *ngIf="selectedTodo.thumbnail" width="150px" height="100px" alt="">
+                            <img src="" *ngIf="!selectedTodo.thumbnail" width="150px" 
+                            height="100px" alt="No image">
+                        </div>
+                        <div class="col-8">
+                            <p>
+                                Title: {{selectedTodo.title}}
+                            </p>
+                            <p>
+                                Description: {{selectedTodo.description}}
+                            </p>
+                            <p>
+                                Links: <span *ngIf="selectedTodo.links">
+                                    <a href="{{selectedTodo.links}}" target="_blank">Link </a>
+                                </span>
+                                <span *ngIf="!selectedTodo.links">
+                                    N/A
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
